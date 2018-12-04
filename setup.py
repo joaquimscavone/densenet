@@ -41,7 +41,9 @@ def config_base(database=None, test_prop=0.0, valid_prop=0.0, discart_prop=0.0):
         dataset = glob.glob(b["url"]+"/*." + b["img_type"])
         #decartando 90% das amostras
         y = leitortxt.txt_to_int(b["url"]+'marcações.out');
-        dataset, X_descart, y, y_descart = spliting(dataset, y, test_size=discart_prop, random_state=rng)
+        if discart_prop > 0:
+            dataset, X_descart, y, y_descart = spliting(dataset, y, test_size=discart_prop, random_state=rng)
+        
         datasize = len(dataset)
 
         test_num = int(datasize*test_prop)

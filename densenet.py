@@ -35,14 +35,20 @@ def get_model_memory_usage(batch_size, model):
 
 
 database = [
-    {"url": '/home/joaquim/Documentos/Visão/trabalho final/densenet/base/lara/', "img_type": "jpg"}
+    {"url": 'base/lara/', "img_type": "jpg"}
 ]
 
 
 
 
 
-discart_prop = 0.99
+discart_prop = 0
+batch_size=10
+epochs=500
+arquitetura = 1
+
+
+
 (train_list, y_train), (test_list, y_test), (valid_list, y_valid) = setup.config_base(database=database, test_prop=0.3, valid_prop=0.1, discart_prop=discart_prop)
 
 
@@ -71,7 +77,12 @@ print(y_test.shape)
 print(y_valid.shape)
 
 
-dense = densenet.DenseNet121(include_top=True, weights=None, input_shape=(img_cols, img_rows, channels), classes=4)
+if arquitetura == 1:
+	dense = densenet.DenseNet169(include_top=True, weights=None, input_shape=(img_cols, img_rows, channels), classes=num_classes)
+elif arquitetura == 2:
+	dense = densenet.DenseNet121(include_top=True, weights=None, input_shape=(img_cols, img_rows, channels), classes=num_classes)
+else:
+	dense = densenet.DenseNet201(include_top=True, weights=None, input_shape=(img_cols, img_rows, channels), classes=num_classes)
 
 
 
@@ -85,15 +96,15 @@ dense.compile(loss=keras.losses.categorical_crossentropy,
 dense.summary()
 
 
-print(get_model_memory_usage(1,dense))
+#print(get_model_memory_usage(1,dense))
 
 print("Modelo compilado!")
 
 
 dense.fit(X_train, y_train,
-          batch_size=4,
-          epochs=10,
-          verbose=1,
+          batch_size=batch_size,
+          epochs=epochs,
+          verbose=2,
           validation_data=(X_valid, y_valid))
 
 score = dense.evaluate(X_test, y_test, verbose=0)
