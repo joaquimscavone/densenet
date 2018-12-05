@@ -43,8 +43,8 @@ database = [
 
 
 discart_prop = 0
-batch_size=10
-epochs=500
+batch_size=6
+epochs=5
 arquitetura = 1
 
 
