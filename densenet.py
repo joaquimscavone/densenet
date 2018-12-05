@@ -42,7 +42,7 @@ database = [
 
 
 
-discart_prop = 0.5
+discart_prop = 0.99
 batch_size=1
 epochs=5
 arquitetura = 1
