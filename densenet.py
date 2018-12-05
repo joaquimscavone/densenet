@@ -11,7 +11,8 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 from keras.applications import densenet
-
+import json
+from keras.callbacks import ModelCheckpoint
 
 def get_model_memory_usage(batch_size, model):
     import numpy as np
@@ -100,13 +101,17 @@ dense.summary()
 
 print("Modelo compilado!")
 
-
-dense.fit(X_train, y_train,
+checkpoint = ModelCheckpoint('best_weights.hdf5', monitor='val_acc', verbose=1, save_best_only=True,save_weights_only=True, mode='max')
+history=dense.fit(X_train, y_train,
           batch_size=batch_size,
           epochs=epochs,
+          callbacks=[checkpoint,],
           verbose=2,
           validation_data=(X_valid, y_valid))
-
+dense.save_weights('end_weights.hdf5', True)
+file_train_history = open('history.json', 'w')
+file_train_history.write(json.dumps(history.history))
+file_train_history.close()
 score = dense.evaluate(X_test, y_test, verbose=0)
 print('Test loss:', score[0])
 print('Test accuracy:', score[1])
