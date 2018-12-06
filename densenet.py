@@ -7,12 +7,14 @@ os.environ["CUDA_VISIBLE_DEVICES"]="0"
 import setup
 import ip
 import keras
-from keras.models import Sequential
+from keras.models import Sequential, Model
 from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 from keras.applications import densenet
 import json
 from keras.callbacks import ModelCheckpoint
+
+
 
 def get_model_memory_usage(batch_size, model):
     import numpy as np
@@ -35,83 +37,121 @@ def get_model_memory_usage(batch_size, model):
     return gbytes
 
 
-database = [
-    {"url": 'base/lara/', "img_type": "jpg"}
-]
+
+def pop(modelo):
+    '''Removes a layer instance on top of the layer stack.
+    '''
+    if not modelo.outputs:
+        raise Exception('Sequential model cannot be popped: model is empty.')
+    else:
+        modelo.layers.pop()
+        if not modelo.layers:
+            modelo.outputs = []
+            modelo.inbound_nodes = []
+            modelo.outbound_nodes = []
+        else:
+            modelo.layers[-1].outbound_nodes = []
+            modelo.outputs = [modelo.layers[-1].output]
+        modelo.built = False
+    return modelo
 
 
 
 
 
-discart_prop = 0.99
-batch_size=1
-epochs=5
-arquitetura = 1
+
+
+def create():
+	database = [
+    	{"url": 'base/laramin/', "img_type": "jpg", "output":"base/marcacoes.out"}
+	]
+
+	discart_prop = 0.0
+	batch_size=1
+	epochs=5
+	arquitetura = 1
 
 
 
-(train_list, y_train), (test_list, y_test), (valid_list, y_valid) = setup.config_base(database=database, test_prop=0.3, valid_prop=0.1, discart_prop=discart_prop)
+	(train_list, y_train), (test_list, y_test), (valid_list, y_valid) = setup.config_base(database=database, test_prop=0.3, valid_prop=0.1, discart_prop=discart_prop)
 
 
-img_rows = 480
-img_cols = 640
-channels = 3
+	img_rows = 224
+	img_cols = 224
+	channels = 3
 
 
-X_train = ip.list_to_array(train_list, (img_rows, img_cols), channels)
-X_test = ip.list_to_array(test_list, (img_rows, img_cols), channels)
-X_valid = ip.list_to_array(valid_list, (img_rows, img_cols), channels)
+	X_train = ip.list_to_array(train_list, (img_rows, img_cols), channels)
+	X_test = ip.list_to_array(test_list, (img_rows, img_cols), channels)
+	X_valid = ip.list_to_array(valid_list, (img_rows, img_cols), channels)
 
 
-print(X_train.shape)
-print(X_test.shape)
-print(X_valid.shape)
+	print(X_train.shape)
+	print(X_test.shape)
+	print(X_valid.shape)
 
-num_classes = 4
-y_train = keras.utils.to_categorical(y_train, num_classes)
-y_test = keras.utils.to_categorical(y_test, num_classes)
-y_valid = keras.utils.to_categorical(y_valid, num_classes)
-
-
-print(y_train.shape)
-print(y_test.shape)
-print(y_valid.shape)
+	num_classes = 4
+	y_train = keras.utils.to_categorical(y_train, num_classes)
+	y_test = keras.utils.to_categorical(y_test, num_classes)
+	y_valid = keras.utils.to_categorical(y_valid, num_classes)
 
 
-if arquitetura == 1:
-	dense = densenet.DenseNet169(include_top=True, weights=None, input_shape=(img_cols, img_rows, channels), classes=num_classes)
-elif arquitetura == 2:
-	dense = densenet.DenseNet121(include_top=True, weights=None, input_shape=(img_cols, img_rows, channels), classes=num_classes)
-else:
-	dense = densenet.DenseNet201(include_top=True, weights=None, input_shape=(img_cols, img_rows, channels), classes=num_classes)
+	print(y_train.shape)
+	print(y_test.shape)
+	print(y_valid.shape)
 
 
-
-dense.compile(loss=keras.losses.categorical_crossentropy,
-              optimizer=keras.optimizers.SGD(),
-              metrics=['accuracy'])
+	if arquitetura == 1:
+		dense = densenet.DenseNet169(include_top=True, weights='imagenet', input_shape=(img_cols, img_rows, channels), classes=1000)
+	elif arquitetura == 2:
+		dense = densenet.DenseNet121(include_top=True, weights='imagenet', input_shape=(img_cols, img_rows, channels), classes=1000)
+	else:
+		dense = densenet.DenseNet201(include_top=True, weights='imagenet', input_shape=(img_cols, img_rows, channels), classes=1000)
 
 
 
 
-dense.summary()
 
 
-#print(get_model_memory_usage(1,dense))
 
-print("Modelo compilado!")
 
-checkpoint = ModelCheckpoint('best_weights.hdf5', monitor='val_acc', verbose=1, save_best_only=True,save_weights_only=True, mode='max')
-history=dense.fit(X_train, y_train,
-          batch_size=batch_size,
-          epochs=epochs,
-          callbacks=[checkpoint,],
-          verbose=2,
-          validation_data=(X_valid, y_valid))
-dense.save_weights('end_weights.hdf5', True)
-file_train_history = open('history.json', 'w')
-file_train_history.write(json.dumps(history.history))
-file_train_history.close()
-score = dense.evaluate(X_test, y_test, verbose=0)
-print('Test loss:', score[0])
-print('Test accuracy:', score[1])
+	x = dense.layers.pop()
+	x = (dense.layers[-1].output)
+	x = Dense(units=2000, activation='relu', name="fc1")(x)
+	x = Dense(units=1800, activation='relu', name="fc2")(x)
+	x = Dense(units=4, activation='softmax', name="output")(x)
+	dense = Model(inputs=dense.input,outputs=x)
+
+
+	dense.compile(loss=keras.losses.categorical_crossentropy, optimizer=keras.optimizers.SGD(), metrics=['accuracy'])
+
+	dense.summary()
+
+
+	#dense.add(Dropout(0.5))
+ 	#dense.add(Dense(units=84, activation='relu'))
+	#dense.add(Dense(num_classes, activation='softmax'))
+	#dense.summary()
+
+
+	#print(get_model_memory_usage(1,dense))
+
+	print("Modelo compilado!")
+
+	checkpoint = ModelCheckpoint('best_weights.hdf5', monitor='val_acc', verbose=1, save_best_only=True,save_weights_only=True, mode='max')
+	history=dense.fit(X_train, y_train,
+	          batch_size=batch_size,
+	          epochs=epochs,
+	          callbacks=[checkpoint,],
+	          verbose=2,
+	          validation_data=(X_valid, y_valid))
+	dense.save_weights('end_weights.hdf5', True)
+	file_train_history = open('history.json', 'w')
+	file_train_history.write(json.dumps(history.history))
+	file_train_history.close()
+	score = dense.evaluate(X_test, y_test, verbose=0)
+	print('Test loss:', score[0])
+	print('Test accuracy:', score[1])
+	return dense
+
+create()
