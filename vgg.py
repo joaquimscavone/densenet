@@ -170,4 +170,4 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 
 	
 
-create(discart_prop=0.9, batch_size=4)
+#create(discart_prop=0.9, batch_size=4)
