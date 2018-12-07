@@ -38,36 +38,14 @@ def get_model_memory_usage(batch_size, model):
 
 
 
-def pop(modelo):
-    '''Removes a layer instance on top of the layer stack.
-    '''
-    if not modelo.outputs:
-        raise Exception('Sequential model cannot be popped: model is empty.')
-    else:
-        modelo.layers.pop()
-        if not modelo.layers:
-            modelo.outputs = []
-            modelo.inbound_nodes = []
-            modelo.outbound_nodes = []
-        else:
-            modelo.layers[-1].outbound_nodes = []
-            modelo.outputs = [modelo.layers[-1].output]
-        modelo.built = False
-    return modelo
 
 
 
-
-
-
-
-def create():
+def create(batch_size=1, discart_prop=0):
 	database = [
     	{"url": 'base/laramin/', "img_type": "jpg", "output":"base/marcacoes.out"}
 	]
 
-	discart_prop = 0
-	batch_size=4
 	epochs= 250
 	arquitetura = 1
 
@@ -137,16 +115,16 @@ def create():
 	#dense.summary()
 
 
-	#print(get_model_memory_usage(1,dense))
+	print(get_model_memory_usage(batch_size,dense))
 
 	print("Modelo compilado!")
 
-	checkpoint = ModelCheckpoint('best_weights.hdf5', monitor='val_acc', verbose=2, save_best_only=True,save_weights_only=True, mode='max')
+	checkpoint = ModelCheckpoint('best_weights.hdf5', monitor='val_acc', verbose=1, save_best_only=True,save_weights_only=True, mode='max')
 	history=dense.fit(X_train, y_train,
 	          batch_size=batch_size,
 	          epochs=epochs,
 	          callbacks=[checkpoint,],
-	          verbose=2,
+	          verbose=1
 	          validation_data=(X_valid, y_valid))
 	dense.save_weights('end_weights.hdf5', True)
 	file_train_history = open('history.json', 'w')
@@ -157,4 +135,4 @@ def create():
 	print('Test accuracy:', score[1])
 	return dense
 
-create()
+#create()
