@@ -46,6 +46,7 @@ def create(batch_size=1, discart_prop=0):
     	{"url": 'base/laramin/', "img_type": "jpg", "output":"base/marcacoes.out"}
 	]
 
+	#hyper
 	epochs= 250
 	arquitetura = 1
 
@@ -80,11 +81,11 @@ def create(batch_size=1, discart_prop=0):
 
 
 	if arquitetura == 1:
-		dense = densenet.DenseNet169(include_top=True, weights='imagenet', input_shape=(img_cols, img_rows, channels), classes=1000)
+		dense = densenet.DenseNet169(include_top=False, weights='imagenet', input_shape=(img_cols, img_rows, channels), classes=1000)
 	elif arquitetura == 2:
-		dense = densenet.DenseNet121(include_top=True, weights='imagenet', input_shape=(img_cols, img_rows, channels), classes=1000)
+		dense = densenet.DenseNet121(include_top=False, weights='imagenet', input_shape=(img_cols, img_rows, channels), classes=1000)
 	else:
-		dense = densenet.DenseNet201(include_top=True, weights='imagenet', input_shape=(img_cols, img_rows, channels), classes=1000)
+		dense = densenet.DenseNet201(include_top=False, weights='imagenet', input_shape=(img_cols, img_rows, channels), classes=1000)
 
 
 
@@ -94,15 +95,18 @@ def create(batch_size=1, discart_prop=0):
 	for layer in dense.layers:
 		layer.trainable = False
 
-	x = dense.layers.pop()
-	x = (dense.layers[-1].output)
-	x = Dense(units=2000, activation='relu', name="fc1")(x)
+	#x = dense.layers.pop()
+	#x = (dense.layers[-1].output)
+
+	#hyper quantidade de neuronios
+	x = Dense(units=2000, activation='relu', name="fc1")
 	x = Dense(units=1800, activation='relu', name="fc2")(x)
+	
 	x = Dense(units=4, activation='softmax', name="output")(x)
 	dense = Model(inputs=dense.input,outputs=x)
 
 	
-
+	#SGD ou RMSPROP
 
 	dense.compile(loss=keras.losses.categorical_crossentropy, optimizer=keras.optimizers.SGD(), metrics=['accuracy'])
 

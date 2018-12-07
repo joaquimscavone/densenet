@@ -49,14 +49,14 @@ def config_base(database=None, test_prop=0.0, valid_prop=0.0, discart_prop=0.0):
         test_num = int(datasize*test_prop)
         valid_num = int(datasize*valid_prop)
         train_num = int(datasize - test_num - valid_num)
-
+        '''
         print("In folder " + b["url"]+ ": " + str(datasize) + " images found.")
         print("Train data: " + str(train_num))
         print("Test data: " + str(test_num))
         print("Valid data: " + str(valid_num))
         #print(b["url"]+'marcações.out')
  
-
+        '''
         
        
         X_train, X_test, y_train, y_test = spliting(dataset, y, test_size=test_num, random_state=rng)
@@ -69,12 +69,12 @@ def config_base(database=None, test_prop=0.0, valid_prop=0.0, discart_prop=0.0):
         y_train_list.append(y_train)
         y_test_list.append(y_test)
         y_valid_list.append(y_valid)
-
+        '''
         print("Data selected...")
         print("Train: " + str(len(X_train)))
         print("Test: " + str(len(X_test)))
         print("Valid: " + str(len(X_valid)))
-
+        '''
 
     train_list = list(flatten(train_list))
     test_list = list(flatten(test_list))
