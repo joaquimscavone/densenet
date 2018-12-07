@@ -2,8 +2,8 @@ import numpy as np
 import cv2
 import os
 
-PATH_EYES = "base/lara2/"
-DST = "base/laramin2/"
+PATH_EYES = "base/lara/"
+DST = "base/laramin/"
 
 
 img_paths = os.listdir(PATH_EYES)
