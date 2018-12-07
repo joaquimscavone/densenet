@@ -124,7 +124,7 @@ def create(batch_size=1, discart_prop=0):
 	          batch_size=batch_size,
 	          epochs=epochs,
 	          callbacks=[checkpoint,],
-	          verbose=1
+	          verbose=1,
 	          validation_data=(X_valid, y_valid))
 	dense.save_weights('end_weights.hdf5', True)
 	file_train_history = open('history.json', 'w')
