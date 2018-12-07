@@ -66,9 +66,9 @@ def create():
     	{"url": 'base/laramin/', "img_type": "jpg", "output":"base/marcacoes.out"}
 	]
 
-	discart_prop = 0.0
-	batch_size=1
-	epochs=5
+	discart_prop = 0
+	batch_size=4
+	epochs= 250
 	arquitetura = 1
 
 
@@ -113,7 +113,8 @@ def create():
 
 
 
-
+	for layer in dense.layers:
+		layer.trainable = False
 
 	x = dense.layers.pop()
 	x = (dense.layers[-1].output)
@@ -121,6 +122,8 @@ def create():
 	x = Dense(units=1800, activation='relu', name="fc2")(x)
 	x = Dense(units=4, activation='softmax', name="output")(x)
 	dense = Model(inputs=dense.input,outputs=x)
+
+	
 
 
 	dense.compile(loss=keras.losses.categorical_crossentropy, optimizer=keras.optimizers.SGD(), metrics=['accuracy'])
@@ -138,7 +141,7 @@ def create():
 
 	print("Modelo compilado!")
 
-	checkpoint = ModelCheckpoint('best_weights.hdf5', monitor='val_acc', verbose=1, save_best_only=True,save_weights_only=True, mode='max')
+	checkpoint = ModelCheckpoint('best_weights.hdf5', monitor='val_acc', verbose=2, save_best_only=True,save_weights_only=True, mode='max')
 	history=dense.fit(X_train, y_train,
 	          batch_size=batch_size,
 	          epochs=epochs,
