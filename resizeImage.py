@@ -11,7 +11,7 @@ contador = 1
 for ip in img_paths:
 	img = cv2.imread(PATH_EYES+ip)
 	ip_png = str(DST)+str(ip)
-	reflect =cv2.resize(img,(224, 224), interpolation = cv2.INTER_CUBIC)
+	reflect =cv2.resize(img,(224, 161), interpolation = cv2.INTER_CUBIC)
 	cv2.imwrite(ip_png,reflect)
 	contador+=1
 	print("Imagem: ",contador);
