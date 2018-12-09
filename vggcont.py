@@ -74,9 +74,9 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 	'''
 
 	if architecture == 16:
-			model = vgg16.VGG16(include_top=False,weights='imagenet', input_shape=(img_cols, img_rows, channels))
+			model = vgg16.VGG16(include_top=False,weights=None, input_shape=(img_cols, img_rows, channels))
 	else:
-			model = vgg19.VGG19(include_top=False, weights='imagenet', input_shape=(img_cols, img_rows, channels))
+			model = vgg19.VGG19(include_top=False, weights=None, input_shape=(img_cols, img_rows, channels))
 	
 		
 
@@ -85,8 +85,6 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 	
 
 
-	for layer in model.layers:
-		layer.trainable = False
 
 	
 	fully = model.output
@@ -96,6 +94,19 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 	fully = Dense(units=MLPhidden, activation='relu', name="MLPhidden")(fully)
 	fully = Dense(units=num_classes, activation='softmax', name="output")(fully)
 	model = Model(inputs=model.input,outputs=fully)
+
+
+
+
+	
+	for layer in model.layers:
+		if mark <= 0:
+			layer.trainable = True
+			#print(layer.name, ' - ativado!')
+		else:
+			#print(layer.name, ' - desativado!')
+			layer.trainable = False
+		mark-=1
 
 
 	model.summary()
@@ -111,19 +122,21 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 		model.compile(loss=keras.losses.categorical_crossentropy, optimizer=keras.optimizers.RMSprop(), metrics=['accuracy'])
 
 
-	print("Treinando fully com convoluções congeladas!")
+	print("Treinando  com convoluções descongeladas!")
+
+	model.load_weigths('pesos/best_weights.hdf5')
 	
 	
 
-	checkpoint = ModelCheckpoint('pesos/t1_best_weights.hdf5', monitor='val_acc', verbose=1, save_best_only=True,save_weights_only=True, mode='max')
+	checkpoint = ModelCheckpoint('pesos/t2_best_weights.hdf5', monitor='val_acc', verbose=1, save_best_only=True,save_weights_only=True, mode='max')
 	history=model.fit(X_train, y_train,
 	          batch_size=batch_size,
 	          epochs=epochs,
 	          callbacks=[checkpoint,],
 	          verbose=1,
 	          validation_data=(X_valid, y_valid))
-	model.save_weights('pesos/t1_end_weights.hdf5', True)
-	file_train_history = open('pesos/t1_history.json', 'w')
+	model.save_weights('pesos/t2_end_weights.hdf5', True)
+	file_train_history = open('pesos/t2_history.json', 'w')
 	file_train_history.write(json.dumps(history.history))
 	file_train_history.close()
 	score = model.evaluate(X_test, y_test, verbose=0)
@@ -131,6 +144,10 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 	print('Test accuracy:', score[1])
 
 
+
+
+
+
 	
 
-#create)(discart_prop=0.9, batch_size=4)
+#create(discart_prop=0.9, batch_size=4)

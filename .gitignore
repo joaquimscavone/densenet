@@ -6,4 +6,4 @@ bin
 include
 share
 .idea
-t1_best_weights.hdf5
+pesos
