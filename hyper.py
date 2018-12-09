@@ -30,5 +30,5 @@ fspace = {
 best = fmin(fn=myvgg.hyper,
     space= fspace,
     algo=tpe.suggest,
-    max_evals=10)
+    max_evals=5)
 print(best)
