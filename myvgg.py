@@ -41,12 +41,12 @@ def get_model_memory_usage(batch_size, model):
 
 
 
-def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4096, discart_prop=0, optimizer='sgd'):
+def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4096, discart_prop=0, mark=16, optimizer='sgd'):
 	img_rows = 224
 	img_cols = 224
 	channels = 3
 	num_classes = 4
-	mark = 16; # o número de camadas que devem permanecer congeladas no segundo treinamento
+	#mark = 11|17; # o número de camadas que devem permanecer congeladas no segundo treinamento
 	database = [
     	{"url": 'base/laramin/', "img_type": "jpg", "output":"base/marcacoes.out"}
 	]
@@ -126,11 +126,75 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 	file_train_history = open('pesos/t1_history.json', 'w')
 	file_train_history.write(json.dumps(history.history))
 	file_train_history.close()
-	score = model.evaluate(X_test, y_test, verbose=0)
-	print('Test loss:', score[0])
-	print('Test accuracy:', score[1])
+	tinicial = model.evaluate(X_test, y_test, verbose=0)
+	print('Test loss:', tinicial[0])
+	print('Test accuracy:', tinicial[1])
 
+	for layer in model.layers:
+		if mark <= 0:
+			layer.trainable = True
+			print(layer.name, ' - ativado!')
+		else:
+			print(layer.name, ' - desativado!')
+			layer.trainable = False
+		mark-=1
+	print('Memória usada no modelo:', get_model_memory_usage(batch_size,model))
+
+
+	if optimizer=='sgd':
+		model.compile(loss=keras.losses.categorical_crossentropy, optimizer=keras.optimizers.SGD(), metrics=['accuracy'])
+	else:
+		model.compile(loss=keras.losses.categorical_crossentropy, optimizer=keras.optimizers.RMSprop(), metrics=['accuracy'])
 
 	
+	model.load_weights('pesos/t1_best_weights.hdf5')
 
-#create)(discart_prop=0.9, batch_size=4)
+	print("Treinando  com convoluções descongeladas!")
+
+
+	checkpoint = ModelCheckpoint('pesos/t2_best_weights.hdf5', monitor='val_acc', verbose=1, save_best_only=True,save_weights_only=True, mode='max')
+	history=model.fit(X_train, y_train,
+	          batch_size=batch_size,
+	          epochs=epochs,
+	          callbacks=[checkpoint,],
+	          verbose=1,
+	          validation_data=(X_valid, y_valid))
+	model.save_weights('pesos/t2_end_weights.hdf5', True)
+	file_train_history = open('pesos/t2_history.json', 'w')
+	file_train_history.write(json.dumps(history.history))
+	file_train_history.close()
+	tfinal = model.evaluate(X_test, y_test, verbose=0)
+	print('Test loss:', tfinal[0])
+	print('Test accuracy:', tfinal[1])
+
+
+	arq = open('pesos/resultados.txt', 'r')
+	texto = arq.readlines()
+	arq.close()
+	texto.append('\n\n---------------------')
+	texto.append('epochs=%d\nMLPinput=%d\nMLPhidden=%d\noptimizer=%s\nmark=%d' % (epochs,MLPinput,MLPhidden,optimizer))
+	texto.append('Treinamento inicial:\n')
+	texto.append('Test loss: %f \n' % tinicial[0])
+	texto.append('Test accuracy: %f \n' %tinicial[1])
+	texto.append('Treinamento Final:\n')
+	texto.append('Test loss: %f \n' % tfinal[0])
+	texto.append('Test accuracy:%f \n' % tfinal[1])
+	arq = open('pesos/resultados.txt', 'w')
+	arq.writelines(texto)
+	arq.close()
+	return tfinal[1]
+
+
+def hyper(params):
+	epochs=params['epochs']
+	MLPinput=params['MLPhidden']
+	MLPhidden=params['MLPhidden']
+	optimizer=params['optimizer']
+	mark=params['mark']
+	return 1 - create(epochs=epochs, MLPinput=MLPinput, MLPhidden=MLPhidden, optimizer=optimizer,mark)
+
+
+
+
+
+#create(discart_prop=0.999, batch_size=1, epochs=1)
