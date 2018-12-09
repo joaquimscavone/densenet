@@ -84,8 +84,7 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 
 	
 
-
-
+	
 	
 	fully = model.output
 	fully = Flatten()(fully)
@@ -97,7 +96,7 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 
 
 
-
+	
 	
 	for layer in model.layers:
 		if mark <= 0:
@@ -111,9 +110,9 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 
 	model.summary()
 	print('Memória usada no modelo:', get_model_memory_usage(batch_size,model))
+	
 
-
-
+	print("Treinando  com convoluções descongeladas!")
 
 
 	if optimizer=='sgd':
@@ -121,13 +120,8 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 	else:
 		model.compile(loss=keras.losses.categorical_crossentropy, optimizer=keras.optimizers.RMSprop(), metrics=['accuracy'])
 
-
-	print("Treinando  com convoluções descongeladas!")
-
-	model.load_weigths('pesos/t1_best_weights.hdf5')
+	model.load_weights('pesos/t1_best_weights.hdf5')
 	
-	
-
 	checkpoint = ModelCheckpoint('pesos/t2_best_weights.hdf5', monitor='val_acc', verbose=1, save_best_only=True,save_weights_only=True, mode='max')
 	history=model.fit(X_train, y_train,
 	          batch_size=batch_size,
