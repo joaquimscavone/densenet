@@ -124,7 +124,7 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 
 	print("Treinando  com convoluções descongeladas!")
 
-	model.load_weigths('pesos/best_weights.hdf5')
+	model.load_weigths('pesos/t1_best_weights.hdf5')
 	
 	
 
