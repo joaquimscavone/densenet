@@ -6,16 +6,20 @@ def teste(params):
 	MLPinput=params['MLPhidden']
 	MLPhidden=params['MLPhidden']
 	optimizer=params['optimizer']
-	mark=params['mark']
-	print('epochs=%d\nMLPinput=%d\nMLPhidden=%d\noptimizer=%s\nmark=%d\n' % (epochs,MLPinput,MLPhidden,optimizer,mark))
+	convtrain=params['convtrain']
+	print('epochs=%d\nMLPinput=%d\nMLPhidden=%d\noptimizer=%s\nconvtrain=%d\nbatch_size=%d\n' % (epochs,MLPinput,MLPhidden,optimizer,convtrain,batch_size))
 	return 1
+
+
+batch_size = int(input("Digite o batch_size:"))
 
 fspace = {
 			'epochs': hp.choice('epochs',range(50,250)),
 			'MLPinput': hp.choice('MLPinput',range(50,8192)),
 			'MLPhidden': hp.choice('MLPhidden',range(50,8192)),
 			'optimizer': hp.choice('optimizer',['sgd','prop']),
-			'convtrain': hp.choice('convtrain',[11,17])
+			'convtrain': hp.choice('convtrain',[11,17]),
+			'batch_size': batch_size
 		}
 
 best = fmin(fn=myvgg.hyper,
