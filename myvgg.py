@@ -210,7 +210,7 @@ def hyper(params):
 	optimizer=params['optimizer']
 	convtrain=params['convtrain']
 	batch_size=params['batch_size']
-	return 1 - create(epochs=epochs, MLPinput=MLPinput, MLPhidden=MLPhidden, optimizer=optimizer,convtrain=convtrain, batch_size=batch_size, discart_prop=0.995)
+	return 1 - create(epochs=epochs, MLPinput=MLPinput, MLPhidden=MLPhidden, optimizer=optimizer,convtrain=convtrain, batch_size=batch_size, discart_prop=0)
 
 
 
