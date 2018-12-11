@@ -38,6 +38,18 @@ def get_model_memory_usage(batch_size, model):
 
 
 
+def getTreino():
+	arq = open('pesos/treino.txt', 'r')
+	texto = arq.readlines()
+	arq.close()
+	return int(texto[0])
+	
+def setTreino(treino):
+	texto = '%d' % treino
+	arq = open('pesos/treino.txt', 'w')
+	arq.writelines(texto)
+	arq.close()
+
 
 
 
@@ -185,34 +197,20 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 	arq.writelines(texto)
 	arq.close()
 	setTreino(treinamento)
+	del model
 	return tfinal[1]
 
 
 
-def getTreino():
-	arq = open('pesos/treino.txt', 'r')
-	texto = arq.readlines()
-	arq.close()
-	return int(texto[0])
-	
-def setTreino(treino):
-	texto = '%d' % treino
-	arq = open('pesos/treino.txt', 'w')
-	arq.writelines(texto)
-	arq.close()
-
 
 def hyper(params):
-	arq = open('pesos/treino.txt', 'r')
-	treino = arq.readlines()
-	arq.close()
 	epochs=params['epochs']
 	MLPinput=params['MLPhidden']
 	MLPhidden=params['MLPhidden']
 	optimizer=params['optimizer']
 	convtrain=params['convtrain']
 	batch_size=params['batch_size']
-	return 1 - create(epochs=epochs, MLPinput=MLPinput, MLPhidden=MLPhidden, optimizer=optimizer,convtrain=convtrain, batch_size=batch_size)
+	return 1 - create(epochs=epochs, MLPinput=MLPinput, MLPhidden=MLPhidden, optimizer=optimizer,convtrain=convtrain, batch_size=batch_size, discart_prop=0.995)
 
 
 
