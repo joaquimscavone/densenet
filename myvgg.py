@@ -15,6 +15,9 @@ import json
 from keras.callbacks import ModelCheckpoint
 
 
+saveweights = False
+
+
 
 def get_model_memory_usage(batch_size, model):
     import numpy as np
@@ -127,15 +130,24 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 	print("Treinando fully com convoluções congeladas!")
 	
 	
-
-	checkpoint = ModelCheckpoint('pesos/t%d_f1_best_weights.hdf5'%treinamento, monitor='val_acc', verbose=1, save_best_only=True,save_weights_only=True, mode='max')
-	history=model.fit(X_train, y_train,
-	          batch_size=batch_size,
-	          epochs=epochs,
-	          callbacks=[checkpoint,],
-	          verbose=1,
-	          validation_data=(X_valid, y_valid))
-	model.save_weights('pesos/t%d_f1_end_weights.hdf5'%treinamento, True)
+	if saveweights :
+		checkpoint = ModelCheckpoint('pesos/t%d_f1_best_weights.hdf5'%treinamento, monitor='val_acc', verbose=1, save_best_only=True,save_weights_only=saveweights, mode='max')
+		history=model.fit(X_train, y_train,
+	    	    			batch_size=batch_size,
+	        				epochs=epochs,
+	          				callbacks=[checkpoint,],
+	          				verbose=1,
+	          				validation_data=(X_valid, y_valid))
+	
+		model.save_weights('pesos/t%d_f1_end_weights.hdf5'%treinamento, True)
+	else:
+		history=model.fit(X_train, y_train,
+	    	    			batch_size=batch_size,
+	        				epochs=epochs,
+	          				verbose=1,
+	          				validation_data=(X_valid, y_valid))
+		
+	
 	file_train_history = open('pesos/t%d_f1_history.json'%treinamento, 'w')
 	file_train_history.write(json.dumps(history.history))
 	file_train_history.close()
@@ -153,26 +165,32 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 		mark-=1
 	print('Memória usada no modelo:', get_model_memory_usage(batch_size,model))
 
-
 	if optimizer=='sgd':
 		model.compile(loss=keras.losses.categorical_crossentropy, optimizer=keras.optimizers.SGD(), metrics=['accuracy'])
 	else:
 		model.compile(loss=keras.losses.categorical_crossentropy, optimizer=keras.optimizers.RMSprop(), metrics=['accuracy'])
 
+	if saveweights:
+		model.load_weights('pesos/t%d_f1_best_weights.hdf5'%treinamento)
 	
-	model.load_weights('pesos/t%d_f1_best_weights.hdf5'%treinamento)
-
 	print("Treinando  com convoluções descongeladas!")
 
-
-	checkpoint = ModelCheckpoint('pesos/t%d_f2_best_weights.hdf5'%treinamento, monitor='val_acc', verbose=1, save_best_only=True,save_weights_only=True, mode='max')
-	history=model.fit(X_train, y_train,
-	          batch_size=batch_size,
-	          epochs=epochs,
-	          callbacks=[checkpoint,],
-	          verbose=1,
-	          validation_data=(X_valid, y_valid))
-	model.save_weights('pesos/t%d_f2_end_weights.hdf5'%treinamento, True)
+	if saveweights:
+		checkpoint = ModelCheckpoint('pesos/t%d_f2_best_weights.hdf5'%treinamento, monitor='val_acc', verbose=1, save_best_only=True,save_weights_only=True, mode='max')
+		history=model.fit(X_train, y_train,
+	    	      batch_size=batch_size,
+	        	  epochs=epochs,
+	          	callbacks=[checkpoint,],
+	          	verbose=1,
+	          	validation_data=(X_valid, y_valid))
+		model.save_weights('pesos/t%d_f2_end_weights.hdf5'%treinamento, True)
+	else:
+		history=model.fit(X_train, y_train,
+	    	      batch_size=batch_size,
+	        	  epochs=epochs,
+	          	verbose=1,
+	          	validation_data=(X_valid, y_valid))
+	
 	file_train_history = open('pesos/t%d_f2_history.json'%treinamento, 'w')
 	file_train_history.write(json.dumps(history.history))
 	file_train_history.close()
@@ -198,13 +216,13 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 	arq.close()
 	setTreino(treinamento)
 	del model
+	keras.backend.clear_session()
 	return tfinal[1]
-
-
 
 
 def hyper(params):
 	epochs=params['epochs']
+	#epochs = 1
 	MLPinput=params['MLPhidden']
 	MLPhidden=params['MLPhidden']
 	optimizer=params['optimizer']
