@@ -56,7 +56,7 @@ def setTreino(treino):
 
 
 
-def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4096, discart_prop=0, convtrain=17, optimizer='sgd'):
+def create(epochs=250, architecture=19, batch_size=1, discart_prop=0, convtrain=17, optimizer='sgd'):
 	img_rows = 224
 	img_cols = 224
 	channels = 3
@@ -107,9 +107,9 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 	
 	fully = model.output
 	fully = Flatten()(fully)
-	fully = Dense(units=MLPinput, activation='relu', name="MLPInput")(fully)
+	#fully = Dense(units=MLPinput, activation='relu', name="MLPInput")(fully)
 	#fully = Dropout(dropout)(fully)
-	fully = Dense(units=MLPhidden, activation='relu', name="MLPhidden")(fully)
+	#fully = Dense(units=MLPhidden, activation='relu', name="MLPhidden")(fully)
 	fully = Dense(units=num_classes, activation='softmax', name="output")(fully)
 	model = Model(inputs=model.input,outputs=fully)
 
@@ -223,12 +223,10 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 def hyper(params):
 	epochs=params['epochs']
 	#epochs = 1
-	MLPinput=params['MLPhidden']
-	MLPhidden=params['MLPhidden']
 	optimizer=params['optimizer']
 	convtrain=params['convtrain']
 	batch_size=params['batch_size']
-	return 1 - create(epochs=epochs, MLPinput=MLPinput, MLPhidden=MLPhidden, optimizer=optimizer,convtrain=convtrain, batch_size=batch_size, discart_prop=0)
+	return 1 - create(epochs=epochs, optimizer=optimizer,convtrain=convtrain, batch_size=batch_size, discart_prop=0)
 
 
 

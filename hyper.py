@@ -19,8 +19,6 @@ def run_trials():
 	max_trials = 1	# initial max_trials. put something small to not have to wait
 	fspace = {
 			'epochs': hp.choice('epochs',range(50,250)),
-			'MLPinput': hp.choice('MLPinput',range(50,8192)),
-			'MLPhidden': hp.choice('MLPhidden',range(50,8192)),
 			'optimizer': hp.choice('optimizer',['sgd','prop']),
 			'convtrain': hp.choice('convtrain',[11,17]),
 			'batch_size': batch_size
