@@ -15,7 +15,7 @@ import json
 from keras.callbacks import ModelCheckpoint
 
 
-saveweights = False
+saveweights = True
 
 
 
@@ -228,7 +228,10 @@ def hyper(params):
 	optimizer=params['optimizer']
 	convtrain=params['convtrain']
 	batch_size=params['batch_size']
+	print('epochs=%d\nMLPinput=%d\nMLPhidden=%d\noptimizer=%s\nconvtrain=%d\nbatch_size=%d\n' % (epochs,MLPinput,MLPhidden,optimizer,convtrain,batch_size))
 	return 1 - create(epochs=epochs, MLPinput=MLPinput, MLPhidden=MLPhidden, optimizer=optimizer,convtrain=convtrain, batch_size=batch_size, discart_prop=0)
+	
+	
 
 
 
