@@ -203,7 +203,7 @@ def create(epochs=250, architecture=19, batch_size=1, discart_prop=0, convtrain=
 	texto = arq.readlines()
 	arq.close()
 	texto.append('Treinamento %d---------------------------------------\n'%treinamento)
-	texto.append('epochs=%d\nMLPinput=%d\nMLPhidden=%d\noptimizer=%s\nconvtrain=%d\n' % (epochs,MLPinput,MLPhidden,optimizer,convtrain))
+	texto.append('epochs=%d\noptimizer=%s\nconvtrain=%d\n' % (epochs,optimizer,convtrain))
 	texto.append('Treinamento inicial:\n')
 	texto.append('Test loss: %f \n' % tinicial[0])
 	texto.append('Test accuracy: %f \n' %tinicial[1])
