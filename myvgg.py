@@ -90,9 +90,9 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 	'''
 
 	if architecture == 16:
-			model = vgg16.VGG16(include_top=False,weights='imagenet', input_shape=(img_cols, img_rows, channels))
+			model = vgg16.VGG16(include_top=True,weights='imagenet', input_shape=(img_cols, img_rows, channels))
 	else:
-			model = vgg19.VGG19(include_top=False, weights='imagenet', input_shape=(img_cols, img_rows, channels))
+			model = vgg19.VGG19(include_top=True, weights='imagenet', input_shape=(img_cols, img_rows, channels))
 	
 		
 
@@ -103,22 +103,22 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 
 	for layer in model.layers:
 		layer.trainable = False
-
 	
-	fully = model.output
-	fully = Flatten()(fully)
-	fully = Dense(units=MLPinput, activation='relu', name="MLPInput")(fully)
+
+	model.layers.pop()
+	fully = (model.layers[-1].output)
+
+	#fully = model.output
+	#fully = Flatten()(fully)
+	#fully = Dense(units=MLPinput, activation='relu', name="MLPInput")(fully)
 	#fully = Dropout(dropout)(fully)
-	fully = Dense(units=MLPhidden, activation='relu', name="MLPhidden")(fully)
+	#fully = Dense(units=MLPhidden, activation='relu', name="MLPhidden")(fully)
 	fully = Dense(units=num_classes, activation='softmax', name="output")(fully)
 	model = Model(inputs=model.input,outputs=fully)
 
 
 	model.summary()
 	print('Memória usada no modelo:', get_model_memory_usage(batch_size,model))
-
-
-
 
 
 	if optimizer=='sgd':
@@ -128,13 +128,11 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 
 
 	print("Treinando fully com convoluções congeladas!")
-	
-	
 	if saveweights :
 		checkpoint = ModelCheckpoint('pesos/t%d_f1_best_weights.hdf5'%treinamento, monitor='val_acc', verbose=1, save_best_only=True,save_weights_only=saveweights, mode='max')
 		history=model.fit(X_train, y_train,
 	    	    			batch_size=batch_size,
-	        				epochs=epochs,
+	        				epochs=50,
 	          				callbacks=[checkpoint,],
 	          				verbose=1,
 	          				validation_data=(X_valid, y_valid))
@@ -143,7 +141,7 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 	else:
 		history=model.fit(X_train, y_train,
 	    	    			batch_size=batch_size,
-	        				epochs=epochs,
+	        				epochs=50,
 	          				verbose=1,
 	          				validation_data=(X_valid, y_valid))
 		
@@ -218,18 +216,17 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 	del model
 	keras.backend.clear_session()
 	return tfinal[1]
+	
 
 
 def hyper(params):
 	epochs=params['epochs']
 	#epochs = 1
-	MLPinput=params['MLPhidden']
-	MLPhidden=params['MLPhidden']
 	optimizer=params['optimizer']
 	convtrain=params['convtrain']
 	batch_size=params['batch_size']
 	print('epochs=%d\nMLPinput=%d\nMLPhidden=%d\noptimizer=%s\nconvtrain=%d\nbatch_size=%d\n' % (epochs,MLPinput,MLPhidden,optimizer,convtrain,batch_size))
-	return 1 - create(epochs=epochs, MLPinput=MLPinput, MLPhidden=MLPhidden, optimizer=optimizer,convtrain=convtrain, batch_size=batch_size, discart_prop=0)
+	return 1 - create(epochs=epochs, optimizer=optimizer,convtrain=convtrain, batch_size=batch_size, discart_prop=0)
 	
 	
 
