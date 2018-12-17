@@ -61,6 +61,7 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 	img_cols = 224
 	channels = 3
 	num_classes = 4
+	MLPepochs = 50
 	treinamento = getTreino()+1
 	mark = convtrain # 11|17; o número de camadas que devem permanecer congeladas no segundo treinamento
 	database = [
@@ -132,7 +133,7 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 		checkpoint = ModelCheckpoint('pesos/t%d_f1_best_weights.hdf5'%treinamento, monitor='val_acc', verbose=1, save_best_only=True,save_weights_only=saveweights, mode='max')
 		history=model.fit(X_train, y_train,
 	    	    			batch_size=batch_size,
-	        				epochs=50,
+	        				epochs=MLPepochs,
 	          				callbacks=[checkpoint,],
 	          				verbose=1,
 	          				validation_data=(X_valid, y_valid))
@@ -141,7 +142,7 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 	else:
 		history=model.fit(X_train, y_train,
 	    	    			batch_size=batch_size,
-	        				epochs=50,
+	        				epochs=MLPepochs,
 	          				verbose=1,
 	          				validation_data=(X_valid, y_valid))
 		
@@ -225,7 +226,7 @@ def hyper(params):
 	optimizer=params['optimizer']
 	convtrain=params['convtrain']
 	batch_size=params['batch_size']
-	print('epochs=%d\nMLPinput=%d\nMLPhidden=%d\noptimizer=%s\nconvtrain=%d\nbatch_size=%d\n' % (epochs,MLPinput,MLPhidden,optimizer,convtrain,batch_size))
+	print('epochs=%d\noptimizer=%s\nconvtrain=%d\nbatch_size=%d\n' % (epochs, optimizer,convtrain,batch_size))
 	return 1 - create(epochs=epochs, optimizer=optimizer,convtrain=convtrain, batch_size=batch_size, discart_prop=0)
 	
 	
