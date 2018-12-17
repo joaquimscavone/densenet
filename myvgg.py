@@ -15,7 +15,7 @@ import json
 from keras.callbacks import ModelCheckpoint
 
 
-saveweights = False
+saveweights = True
 
 
 
@@ -56,11 +56,12 @@ def setTreino(treino):
 
 
 
-def create(epochs=250, architecture=19, batch_size=1, discart_prop=0, convtrain=17, optimizer='sgd'):
+def create(epochs=250, architecture=19, batch_size=1, MLPinput = 4096, MLPhidden=4096, discart_prop=0, convtrain=17, optimizer='sgd'):
 	img_rows = 224
 	img_cols = 224
 	channels = 3
 	num_classes = 4
+	MLPepochs = 50
 	treinamento = getTreino()+1
 	mark = convtrain # 11|17; o número de camadas que devem permanecer congeladas no segundo treinamento
 	database = [
@@ -90,9 +91,9 @@ def create(epochs=250, architecture=19, batch_size=1, discart_prop=0, convtrain=
 	'''
 
 	if architecture == 16:
-			model = vgg16.VGG16(include_top=False,weights='imagenet', input_shape=(img_cols, img_rows, channels))
+			model = vgg16.VGG16(include_top=True,weights='imagenet', input_shape=(img_cols, img_rows, channels))
 	else:
-			model = vgg19.VGG19(include_top=False, weights='imagenet', input_shape=(img_cols, img_rows, channels))
+			model = vgg19.VGG19(include_top=True, weights='imagenet', input_shape=(img_cols, img_rows, channels))
 	
 		
 
@@ -103,10 +104,13 @@ def create(epochs=250, architecture=19, batch_size=1, discart_prop=0, convtrain=
 
 	for layer in model.layers:
 		layer.trainable = False
-
 	
-	fully = model.output
-	fully = Flatten()(fully)
+
+	model.layers.pop()
+	fully = (model.layers[-1].output)
+
+	#fully = model.output
+	#fully = Flatten()(fully)
 	#fully = Dense(units=MLPinput, activation='relu', name="MLPInput")(fully)
 	#fully = Dropout(dropout)(fully)
 	#fully = Dense(units=MLPhidden, activation='relu', name="MLPhidden")(fully)
@@ -118,9 +122,6 @@ def create(epochs=250, architecture=19, batch_size=1, discart_prop=0, convtrain=
 	print('Memória usada no modelo:', get_model_memory_usage(batch_size,model))
 
 
-
-
-
 	if optimizer=='sgd':
 		model.compile(loss=keras.losses.categorical_crossentropy, optimizer=keras.optimizers.SGD(), metrics=['accuracy'])
 	else:
@@ -128,13 +129,11 @@ def create(epochs=250, architecture=19, batch_size=1, discart_prop=0, convtrain=
 
 
 	print("Treinando fully com convoluções congeladas!")
-	
-	
 	if saveweights :
 		checkpoint = ModelCheckpoint('pesos/t%d_f1_best_weights.hdf5'%treinamento, monitor='val_acc', verbose=1, save_best_only=True,save_weights_only=saveweights, mode='max')
 		history=model.fit(X_train, y_train,
 	    	    			batch_size=batch_size,
-	        				epochs=epochs,
+	        				epochs=MLPepochs,
 	          				callbacks=[checkpoint,],
 	          				verbose=1,
 	          				validation_data=(X_valid, y_valid))
@@ -143,7 +142,7 @@ def create(epochs=250, architecture=19, batch_size=1, discart_prop=0, convtrain=
 	else:
 		history=model.fit(X_train, y_train,
 	    	    			batch_size=batch_size,
-	        				epochs=epochs,
+	        				epochs=MLPepochs,
 	          				verbose=1,
 	          				validation_data=(X_valid, y_valid))
 		
@@ -218,6 +217,7 @@ def create(epochs=250, architecture=19, batch_size=1, discart_prop=0, convtrain=
 	del model
 	keras.backend.clear_session()
 	return tfinal[1]
+	
 
 
 def hyper(params):
@@ -226,8 +226,10 @@ def hyper(params):
 	optimizer=params['optimizer']
 	convtrain=params['convtrain']
 	batch_size=params['batch_size']
+	print('epochs=%d\noptimizer=%s\nconvtrain=%d\nbatch_size=%d\n' % (epochs, optimizer,convtrain,batch_size))
 	return 1 - create(epochs=epochs, optimizer=optimizer,convtrain=convtrain, batch_size=batch_size, discart_prop=0)
-
+	
+	
 
 
 
