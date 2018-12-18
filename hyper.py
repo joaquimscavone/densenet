@@ -38,7 +38,6 @@ def run_trials():
 				algo=tpe.suggest,
 				max_evals=max_trials,
 				trials=trials)
-
 	print("Best:", best)
     
     # save the trials object
