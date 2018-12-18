@@ -42,14 +42,14 @@ def get_model_memory_usage(batch_size, model):
 
 
 def getTreino():
-	arq = open('pesos/treino.txt', 'r')
+	arq = open('dados/treino.txt', 'r')
 	texto = arq.readlines()
 	arq.close()
 	return int(texto[0])
 	
 def setTreino(treino):
 	texto = '%d' % treino
-	arq = open('pesos/treino.txt', 'w')
+	arq = open('dados/treino.txt', 'w')
 	arq.writelines(texto)
 	arq.close()
 
@@ -191,7 +191,7 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 	          	verbose=1,
 	          	validation_data=(X_valid, y_valid))
 	
-	file_train_history = open('pesos/t%d_f2_history.json'%treinamento, 'w')
+	file_train_history = open('dados/t%d_f2_history.json'%treinamento, 'w')
 	file_train_history.write(json.dumps(history.history))
 	file_train_history.close()
 	tfinal = model.evaluate(X_test, y_test, verbose=0)
@@ -199,7 +199,7 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 	print('Test accuracy:', tfinal[1])
 
 
-	arq = open('pesos/resultados.txt', 'r')
+	arq = open('dados/resultados.txt', 'r')
 	texto = arq.readlines()
 	arq.close()
 	texto.append('Treinamento %d---------------------------------------\n'%treinamento)
@@ -211,7 +211,7 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 	texto.append('Test loss: %f \n' % tfinal[0])
 	texto.append('Test accuracy:%f \n' % tfinal[1])
 	texto.append('Fim do treinamento %d---------------------------------------\n\n\n'%treinamento)
-	arq = open('pesos/resultados.txt', 'w')
+	arq = open('dados/resultados.txt', 'w')
 	arq.writelines(texto)
 	arq.close()
 	setTreino(treinamento)

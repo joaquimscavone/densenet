@@ -26,7 +26,7 @@ def run_trials():
 			'batch_size': batch_size
 		}
 	try:	#try to load an already saved trials object, and increase the max
-		trials = pickle.load(open("pesos/hyperopt", "rb"))
+		trials = pickle.load(open("dados/hyperopt", "rb"))
 		#print("Found saved Trials! Loading...")
 		max_trials = len(trials.trials) + trials_step
 		print("Rerunning from {} trials to {} (+{}) trials".format(len(trials.trials), max_trials, trials_step))
@@ -42,7 +42,7 @@ def run_trials():
 	print("Best:", best)
     
     # save the trials object
-	with open("pesos/hyperopt", "wb") as f:
+	with open("dados/hyperopt", "wb") as f:
 		pickle.dump(trials, f)
 
 # loop indefinitely and stop whenever you like
