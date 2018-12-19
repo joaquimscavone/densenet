@@ -4,7 +4,7 @@ import os
 #os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
 # The GPU id to use, usually either "0" or "1"
 #os.environ["CUDA_VISIBLE_DEVICES"]="0" 
-import nsetup as setup
+import nsetup
 import ip
 import keras
 from keras.models import Sequential, Model
@@ -70,7 +70,7 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 
 	
 
-	(train_list, y_train), (test_list, y_test), (valid_list, y_valid) = setup.config_base(database=database, test_prop=0.3, valid_prop=0.1, discart_prop=discart_prop)
+	(train_list, y_train), (test_list, y_test), (valid_list, y_valid) = nsetup.config_base(database=database, test_prop=0.3, valid_prop=0.1, discart_prop=discart_prop)
 	X_train = ip.list_to_array(train_list, (img_rows, img_cols), channels)
 	X_test = ip.list_to_array(test_list, (img_rows, img_cols), channels)
 	X_valid = ip.list_to_array(valid_list, (img_rows, img_cols), channels)
@@ -84,6 +84,8 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 	#y_test = keras.utils.to_categorical(y_test, num_classes)
 	#y_valid = keras.utils.to_categorical(y_valid, num_classes)
 
+
+	print(y_test)
 	'''
 	print(y_train.shape)
 	print(y_test.shape)
@@ -238,4 +240,4 @@ def hyper(params):
 
 
 
-#create(discart_prop=0.999, batch_size=1, epochs=1)
+create(discart_prop=0.999, batch_size=1, epochs=1)
