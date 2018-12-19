@@ -32,7 +32,7 @@ def setFile(file, texto):
 
 
 
-def executeCNN(architecture='DenseNet169', MLPinput=4096, MLPhidden=4096, optimizer='sgd', pesos=None):
+def executeCNN(architecture='DenseNet169', MLPinput=4096, MLPhidden=4096, optimizer='sgd', pesos=None, discart_prop=0):
 	img_rows = 224
 	img_cols = 224
 	channels = 3
@@ -45,7 +45,7 @@ def executeCNN(architecture='DenseNet169', MLPinput=4096, MLPhidden=4096, optimi
 
 	
 
-	(train_list, y_train), (test_list, y_test), (valid_list, y_valid) = setup.config_base(database=database, test_prop=0.3, valid_prop=0.1)
+	(train_list, y_train), (test_list, y_test), (valid_list, y_valid) = setup.config_base(database=database, test_prop=0.3, valid_prop=0.1, discart_prop=discart_prop)
 	X_train = ip.list_to_array(train_list, (img_rows, img_cols), channels)
 	X_test = ip.list_to_array(test_list, (img_rows, img_cols), channels)
 	X_valid = ip.list_to_array(valid_list, (img_rows, img_cols), channels)
@@ -156,4 +156,4 @@ def plot_confusion_matrix(cm, classes,
     plt.tight_layout()
 
 
-executeCNN(architecture='DenseNet169', MLPinput=0, MLPhidden=0, optimizer='sgd', pesos='/content/densenet/dados/best_densenet.hdf5')
+executeCNN(architecture='DenseNet169', MLPinput=0, MLPhidden=0, optimizer='sgd', pesos='/content/densenet/dados/best_densenet.hdf5', discart_prop=0.99)
