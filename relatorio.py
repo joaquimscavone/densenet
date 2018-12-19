@@ -156,4 +156,4 @@ def plot_confusion_matrix(cm, classes,
     plt.tight_layout()
 
 
-executeCNN(architecture='DenseNet169', MLPinput=0, MLPhidden=0, optimizer='sgd', pesos='/content/densenet/dados/best_densenet.hdf5', discart_prop=0.99)
+executeCNN(architecture='DenseNet169', MLPinput=0, MLPhidden=0, optimizer='sgd', pesos='/content/densenet/dados/best_densenet.hdf5')
