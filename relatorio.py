@@ -10,7 +10,7 @@ import keras
 from keras.models import Sequential, Model
 from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
-from keras.applications import vgg19, vgg16
+from keras.applications import vgg19, vgg16, densenet
 import json
 from keras.callbacks import ModelCheckpoint
 from sklearn.metrics import confusion_matrix
@@ -67,7 +67,7 @@ def executeCNN(architecture='DenseNet169', MLPinput=4096, MLPhidden=4096, optimi
 	
 		
 	fully = model.output
-	fully = Flatten()(fully)
+	#fully = Flatten()(fully)
 	if MLPinput>0:
 		fully = Dense(units=MLPinput, activation='relu', name="MLPInput")(fully)
 	#fully = Dropout(dropout)(fully)
@@ -103,7 +103,7 @@ def plot(file, title):
 	arq.close()
 	plt.xlabel("Épocas", fontsize=14)
 	plt.suptitle("Métricas", fontsize=16)
-	#plt.ylim(0, 1.0)
+	plt.ylim(0, 1.0)
 	plt.axis([0, len(json_dict['val_acc']), 0.0, 1.2])
 	plt.title(title, fontsize=10)
 	plt.plot(json_dict['val_acc'],label='Acc Val', color='red', linewidth=1.0) #r--  g^  bs  ro
