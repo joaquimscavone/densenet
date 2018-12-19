@@ -59,11 +59,11 @@ def executeCNN(architecture='DenseNet169', MLPinput=4096, MLPhidden=4096, optimi
 
 
 	if architecture == 'DenseNet169':
-		model = densenet.DenseNet169(include_top=False, weights='imagenet', input_shape=(img_cols, img_rows, channels))
+		model = densenet.DenseNet169(include_top=False, weights=None, input_shape=(img_cols, img_rows, channels))
 	elif architecture=='VGG16':
-			model = vgg16.VGG16(include_top=False,weights='imagenet', input_shape=(img_cols, img_rows, channels))
+		model = vgg16.VGG16(include_top=False,weights=None, input_shape=(img_cols, img_rows, channels))
 	elif architecture=='VGG19':
-			model = vgg19.VGG19(include_top=False, weights='imagenet', input_shape=(img_cols, img_rows, channels))
+		model = vgg19.VGG19(include_top=False, weights=None, input_shape=(img_cols, img_rows, channels))
 	
 		
 	fully = model.output
@@ -81,13 +81,14 @@ def executeCNN(architecture='DenseNet169', MLPinput=4096, MLPhidden=4096, optimi
 	model.summary()
 	#print('Memória usada no modelo:', get_model_memory_usage(batch_size,model))
 
+	model.load_weights(pesos)
 
 	if optimizer=='sgd':
 		model.compile(loss=keras.losses.categorical_crossentropy, optimizer=keras.optimizers.SGD(), metrics=['accuracy'])
 	else:
 		model.compile(loss=keras.losses.categorical_crossentropy, optimizer=keras.optimizers.RMSprop(), metrics=['accuracy'])
 
-	model.load_weights(pesos)
+
 	tfinal = model.evaluate(X_test, y_test, verbose=0)
 	y_pred = model.predict(x, verbose=0)
 	confusion_matrix(y_test, y_pred)
