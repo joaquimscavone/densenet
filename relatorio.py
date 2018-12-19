@@ -104,7 +104,7 @@ def plot(file, title):
 	plt.xlabel("Épocas", fontsize=14)
 	plt.suptitle("Métricas", fontsize=16)
 	#plt.ylim(0, 1.0)
-	plt.axis([0, len(json_dict['val_accc']), 0.0, 1.2])
+	plt.axis([0, len(json_dict['val_acc']), 0.0, 1.2])
 	plt.title(title, fontsize=10)
 	plt.plot(json_dict['val_acc'],label='Acc Val', color='red', linewidth=1.0) #r--  g^  bs  ro
 	plt.plot(json_dict['acc'],label='Acc', color='blue', linewidth=1.0) #r--  g^  bs  ro
