@@ -96,7 +96,7 @@ def executeCNN(architecture='DenseNet169', MLPinput=4096, MLPhidden=4096, optimi
 	print('Test loss:', score[0])
 	print('Test accuracy:', score[1])
 	#s(y_test, y_pred)
-	print(matrix(y_test))
+	print(convertsaida(y_test))
 	y_pred = np.argmax(y_pred,axis=-1)
 	convertSaida()
 	#cnf_matrix = confusion_matrix(y_test, y_pred)
@@ -105,8 +105,8 @@ def executeCNN(architecture='DenseNet169', MLPinput=4096, MLPhidden=4096, optimi
 
 
 
-def convertsaida(matrix)
-	print(len(matrix));
+def convertSolucao(solucao)
+	print(len(solucao));
 
 def plot(file, title):
 	arq = open(file,"r")
@@ -158,5 +158,3 @@ def plot_confusion_matrix(cm, classes,
     plt.tight_layout()
 
 
-def matrix():
-	cnf_matrix = confusion_matrix([1, 2 , 3 ,4 ,5 ], y_pred)
