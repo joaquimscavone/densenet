@@ -76,9 +76,9 @@ def config_base(database=None, test_prop=0.0, valid_prop=0.0, discart_prop=0.0):
         print("Valid: " + str(len(X_valid)))
         '''
 
-    train_list = list(flatten(train_list))
-    test_list = list(flatten(test_list))
-    valid_list = list(flatten(valid_list))
+    y_train_list = list(flatten(train_list))
+    y_test_list = list(flatten(test_list))
+    y_valid_list = list(flatten(valid_list))
     
     #y_train_list = list(flatten(y_train_list))
     #y_test_list = list(flatten(y_test_list))

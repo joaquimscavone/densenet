@@ -80,9 +80,9 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 	#print(X_valid.shape)
 
 	
-	y_train = keras.utils.to_categorical(y_train, 1)
-	y_test = keras.utils.to_categorical(y_test, 1)
-	y_valid = keras.utils.to_categorical(y_valid, 1)
+	#y_train = keras.utils.to_categorical(y_train, num_classes)
+	#y_test = keras.utils.to_categorical(y_test, num_classes)
+	#y_valid = keras.utils.to_categorical(y_valid, num_classes)
 
 
 	print(y_test)
