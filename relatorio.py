@@ -96,7 +96,7 @@ def executeCNN(architecture='DenseNet169', MLPinput=4096, MLPhidden=4096, optimi
 	print('Test loss:', score[0])
 	print('Test accuracy:', score[1])
 	#s(y_test, y_pred)
-	print(convertsaida(y_test))
+	print(convertSolucao(y_test))
 	y_pred = np.argmax(y_pred,axis=-1)
 	convertSaida()
 	#cnf_matrix = confusion_matrix(y_test, y_pred)
@@ -158,4 +158,4 @@ def plot_confusion_matrix(cm, classes,
     plt.tight_layout()
 
 
-#executeCNN(architecture='DenseNet169', MLPinput=0, MLPhidden=0, optimizer='sgd', pesos=None, discart_prop=0.99)
+executeCNN(architecture='DenseNet169', MLPinput=0, MLPhidden=0, optimizer='sgd', pesos=None, discart_prop=0.99)
