@@ -32,7 +32,7 @@ def setFile(file, texto):
 
 
 
-def executeCNN(architecture='DenseNet169', MLPinput=4096, MLPhidden=4096, optimizer=='sgd'):
+def executeCNN(architecture='DenseNet169', MLPinput=4096, MLPhidden=4096, optimizer='sgd', pesos=None):
 	img_rows = 224
 	img_cols = 224
 	channels = 3
@@ -87,7 +87,7 @@ def executeCNN(architecture='DenseNet169', MLPinput=4096, MLPhidden=4096, optimi
 	else:
 		model.compile(loss=keras.losses.categorical_crossentropy, optimizer=keras.optimizers.RMSprop(), metrics=['accuracy'])
 
-	model.load_weights('pesos/'+pesos);
+	model.load_weights(pesos);
 	tfinal = model.evaluate(X_test, y_test, verbose=0)
 	y_pred = model.predict(x,batch_size, verbose=0)
 	confusion_matrix(y_test, y_pred)
