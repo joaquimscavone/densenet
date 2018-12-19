@@ -78,7 +78,7 @@ def executeCNN(architecture='DenseNet169', MLPinput=4096, MLPhidden=4096, optimi
 	model = Model(inputs=model.input,outputs=fully)
 
 
-	#model.summary()
+	model.summary()
 	#print('Memória usada no modelo:', get_model_memory_usage(batch_size,model))
 
 
@@ -87,9 +87,9 @@ def executeCNN(architecture='DenseNet169', MLPinput=4096, MLPhidden=4096, optimi
 	else:
 		model.compile(loss=keras.losses.categorical_crossentropy, optimizer=keras.optimizers.RMSprop(), metrics=['accuracy'])
 
-	model.load_weights(pesos);
+	model.load_weights(pesos)
 	tfinal = model.evaluate(X_test, y_test, verbose=0)
-	y_pred = model.predict(x,batch_size, verbose=0)
+	y_pred = model.predict(x, verbose=0)
 	confusion_matrix(y_test, y_pred)
 	confusion_matrix(y_test, np.argmax(y_pred,axis=-1))
 
