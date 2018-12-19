@@ -82,8 +82,8 @@ def executeCNN(architecture='DenseNet169', MLPinput=4096, MLPhidden=4096, optimi
 
 	model.summary()
 	#print('Memória usada no modelo:', get_model_memory_usage(batch_size,model))
-
-	model.load_weights(pesos)
+	if(pesos!=None):
+		model.load_weights(pesos)
 
 	if optimizer=='sgd':
 		model.compile(loss=keras.losses.categorical_crossentropy, optimizer=keras.optimizers.SGD(), metrics=['accuracy'])
@@ -105,8 +105,8 @@ def executeCNN(architecture='DenseNet169', MLPinput=4096, MLPhidden=4096, optimi
 
 
 
-def convertSolucao(solucao)
-	print(len(solucao));
+def convertSolucao(solucao):
+	type(solucao);
 
 def plot(file, title):
 	arq = open(file,"r")
@@ -158,3 +158,4 @@ def plot_confusion_matrix(cm, classes,
     plt.tight_layout()
 
 
+#executeCNN(architecture='DenseNet169', MLPinput=0, MLPhidden=0, optimizer='sgd', pesos=None, discart_prop=0.99)
