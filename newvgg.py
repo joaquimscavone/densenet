@@ -75,17 +75,18 @@ def create(epochs=250, architecture=19, batch_size=1, MLPinput=4096, MLPhidden=4
 	X_test = ip.list_to_array(test_list, (img_rows, img_cols), channels)
 	X_valid = ip.list_to_array(valid_list, (img_rows, img_cols), channels)
 
+	#print(X_test[0]);
 	#print(X_train.shape)
 	#print(X_test.shape)
 	#print(X_valid.shape)
 
 	
 	#y_train = keras.utils.to_categorical(y_train, num_classes)
-	#y_test = keras.utils.to_categorical(y_test, num_classes)
+	y_test = keras.utils.to_categorical(y_test, 1)
 	#y_valid = keras.utils.to_categorical(y_valid, num_classes)
 
 
-	print(y_test)
+	print(y_test.shape)
 
 	exit();
 	'''

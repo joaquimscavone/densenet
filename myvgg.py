@@ -238,4 +238,4 @@ def hyper(params):
 
 
 
-#create(discart_prop=0.999, batch_size=1, epochs=1)
+create(discart_prop=0.999, batch_size=1, epochs=1)

@@ -83,7 +83,7 @@ def config_base(database=None, test_prop=0.0, valid_prop=0.0, discart_prop=0.0):
     #y_train_list = list(flatten(y_train_list))
     #y_test_list = list(flatten(y_test_list))
     #y_valid_list = list(flatten(y_valid_list))
-    print(list_valid_list)
+    #print(y_valid_list)
 
     train = list(zip(train_list, y_train_list))
     test = list(zip(test_list, y_test_list))
