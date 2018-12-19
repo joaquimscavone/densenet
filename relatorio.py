@@ -82,8 +82,7 @@ def executeCNN(architecture='DenseNet169', MLPinput=4096, MLPhidden=4096, optimi
 
 	model.summary()
 	#print('Memória usada no modelo:', get_model_memory_usage(batch_size,model))
-	if(pesos!=None):
-		model.load_weights(pesos)
+	model.load_weights(pesos)
 
 	if optimizer=='sgd':
 		model.compile(loss=keras.losses.categorical_crossentropy, optimizer=keras.optimizers.SGD(), metrics=['accuracy'])
