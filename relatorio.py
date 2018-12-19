@@ -95,6 +95,7 @@ def executeCNN(architecture='DenseNet169', MLPinput=4096, MLPhidden=4096, optimi
 	print('Test loss:', score[0])
 	print('Test accuracy:', score[1])
 	#s(y_test, y_pred)
+	print(y_test)
 	print(convertSolucao(y_test))
 	y_pred = np.argmax(y_pred,axis=-1)
 	#cnf_matrix = confusion_matrix(y_test, y_pred)
@@ -103,8 +104,25 @@ def executeCNN(architecture='DenseNet169', MLPinput=4096, MLPhidden=4096, optimi
 
 
 
-def convertSolucao(solucao):
-	type(solucao);
+def convertSolucao(y):
+	y = np.argmax(y,axis=-1)
+	print(y)
+	for i in range(len(y[0])):
+		print(y[i])
+		try:
+			print(y[[i]])
+		except:
+			print(y[i][0])
+		if y[i][0]== 0:
+			solucao[i]=0
+		elif(y[i][1]==1):
+			solucao[i]=1
+		elif(y[i][2]==1):
+			solucao[i]=2
+		else:
+			solucao[i]=3
+
+
 
 def plot(file, title):
 	arq = open(file,"r")
@@ -156,4 +174,4 @@ def plot_confusion_matrix(cm, classes,
     plt.tight_layout()
 
 
-executeCNN(architecture='DenseNet169', MLPinput=0, MLPhidden=0, optimizer='sgd', pesos='/content/densenet/dados/best_densenet.hdf5', discart_prop=0.99)
+executeCNN(architecture='DenseNet169', MLPinput=0, MLPhidden=0, optimizer='sgd', pesos='/home/joaquim/Downloads/densenet/best_densenet.hdf5', discart_prop=0.998)
