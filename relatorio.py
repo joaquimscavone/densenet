@@ -59,14 +59,16 @@ def executeCNN(architecture='DenseNet169', MLPinput=4096, MLPhidden=4096, optimi
 
 
 	if architecture == 'DenseNet169':
-		model = densenet.DenseNet169(include_top=False, weights=None, input_shape=(img_cols, img_rows, channels))
+		model = densenet.DenseNet169(include_top=True, weights=None, input_shape=(img_cols, img_rows, channels))
 	elif architecture=='VGG16':
 		model = vgg16.VGG16(include_top=False,weights=None, input_shape=(img_cols, img_rows, channels))
 	elif architecture=='VGG19':
 		model = vgg19.VGG19(include_top=False, weights=None, input_shape=(img_cols, img_rows, channels))
 	
-		
-	fully = model.output
+	fully = model.layers.pop()
+	fully = (model.layers[-1].output)
+	
+	#fully = model.output
 	#fully = Flatten()(fully)
 	if MLPinput>0:
 		fully = Dense(units=MLPinput, activation='relu', name="MLPInput")(fully)
