@@ -96,15 +96,17 @@ def executeCNN(architecture='DenseNet169', MLPinput=4096, MLPhidden=4096, optimi
 	print('Test loss:', score[0])
 	print('Test accuracy:', score[1])
 	#s(y_test, y_pred)
-	print(y_test)
-	print(np.argmax(y_pred,axis=-1))
+	print(matrix(y_test))
+	y_pred = np.argmax(y_pred,axis=-1)
+	convertSaida()
 	#cnf_matrix = confusion_matrix(y_test, y_pred)
 	np.set_printoptions(precision=2)
 	#confusion_matrix(y_test, np.argmax(y_pred,axis=-1))
 
 
 
-
+def convertsaida(matrix)
+	print(len(matrix));
 
 def plot(file, title):
 	arq = open(file,"r")
