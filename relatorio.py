@@ -91,8 +91,10 @@ def executeCNN(architecture='DenseNet169', MLPinput=4096, MLPhidden=4096, optimi
 		model.compile(loss=keras.losses.categorical_crossentropy, optimizer=keras.optimizers.RMSprop(), metrics=['accuracy'])
 
 
-	tfinal = model.evaluate(X_test, y_test, verbose=0)
-	y_pred = model.predict(x, verbose=0)
+	score = model.evaluate(X_test, y_test, verbose=0)
+	y_pred = model.predict(X_test, verbose=0)
+	print('Test loss:', score[0])
+	print('Test accuracy:', score[1])
 	confusion_matrix(y_test, y_pred)
 	confusion_matrix(y_test, np.argmax(y_pred,axis=-1))
 
