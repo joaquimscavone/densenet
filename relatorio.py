@@ -97,8 +97,8 @@ def executeCNN(architecture='DenseNet169', MLPinput=4096, MLPhidden=4096, optimi
 	print('Test accuracy:', score[1])
 	#s(y_test, y_pred)
 	print(y_test)
-	print(y_pred)
-	cnf_matrix = confusion_matrix(y_test, y_pred)
+	print(np.argmax(y_pred,axis=-1))
+	#cnf_matrix = confusion_matrix(y_test, y_pred)
 	np.set_printoptions(precision=2)
 	#confusion_matrix(y_test, np.argmax(y_pred,axis=-1))
 
